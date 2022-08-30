@@ -10,14 +10,14 @@ use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
 
-class Lists extends Command
+class Assistants extends Command
 {
     protected function configure()
     {
         // 指令配置
-        $this->setName('zoom:user:list')
-            ->addArgument('status', Argument::OPTIONAL, "status 会议类型: active,inactive,pending")
-            ->setDescription('列出所有用户');
+        $this->setName('zoom:users:assistants')
+            ->addArgument('user_id', Argument::OPTIONAL, "")
+            ->setDescription('列出所有助手');
     }
 
     /**
@@ -25,8 +25,8 @@ class Lists extends Command
      */
     protected function execute(Input $input, Output $output)
     {
-        $status = $input->getArgument('status') ?? 'active';
-        $list = (new User())->lists($status);
+        $user_id = $input->getArgument('user_id') ?? '';
+        $list = (new User())->assistants($user_id);
         $output->writeln(var_export($list, true));
     }
 }

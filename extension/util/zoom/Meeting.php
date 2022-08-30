@@ -1,10 +1,9 @@
 <?php
 
-namespace util\zoom;
+namespace extension\util\zoom;
 
 
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 
 class Meeting extends Zoom
 {
@@ -26,6 +25,31 @@ class Meeting extends Zoom
                 'page_number' => $page_number
             ];
             $response = $this->request('/v2/users/me/meetings', $query);
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (GuzzleException $e) {
+            $response = $e->getResponse();
+            $body = json_decode($response->getBody(), true);
+            if (json_last_error()) {
+                $message = $e->getMessage();
+                $code = $e->getCode();
+            } else {
+                $message = $body['message'];
+                $code = $body['code'];
+            }
+            throw new ZoomException($message, $code);
+        }
+    }
+
+    public function user(string $user_id, string $type = 'live', int $page_number = 1, int $page_size = 30, string $next_page_token = '')
+    {
+        try {
+            $query = [
+                'type' => $type,
+                'page_size' => $page_size,
+                'next_page_token' => $next_page_token,
+                'page_number' => $page_number
+            ];
+            $response = $this->request('/v2/users/' . $user_id . '/meetings', $query);
             return json_decode($response->getBody()->getContents(), true);
         } catch (GuzzleException $e) {
             $response = $e->getResponse();
@@ -68,7 +92,7 @@ class Meeting extends Zoom
 
     /**
      * 获取会议
-     * @param $meeting_id
+     * @param string $meeting_id
      * @throws ZoomException
      * @return mixed
      */
@@ -94,8 +118,8 @@ class Meeting extends Zoom
 
     /**
      * 更新会议
-     * @param $meeting_id
-     * @param $data
+     * @param string $meeting_id
+     * @param array $data
      * @throws ZoomException
      * @return bool
      */
@@ -123,7 +147,7 @@ class Meeting extends Zoom
      * @throws ZoomException
      * @return bool
      */
-    public function delete(string $meeting_id)
+    public function delete(string $meeting_id): bool
     {
         try {
             return $this->request('/v2/meetings/' . $meeting_id, [], 'DELETE')->getStatusCode() === 204;
@@ -170,6 +194,9 @@ class Meeting extends Zoom
         }
     }
 
+    /**
+     * @throws ZoomException
+     */
     public function inviteLinks(string $meeting_id, array $attendees, int $ttl = 7200)
     {
         try {
@@ -197,8 +224,8 @@ class Meeting extends Zoom
 
     /**
      * 批量添加会议注册人(一次最多添加30个)
-     * @param $meeting_id
-     * @param $registrants
+     * @param string $meeting_id
+     * @param array $registrants
      * @throws ZoomException
      * @return mixed
      */
@@ -228,7 +255,7 @@ class Meeting extends Zoom
 
     /**
      * 列出所有注册人
-     * @param $meeting_id
+     * @param string $meeting_id
      * @param string $status
      * @throws ZoomException
      * @return mixed
@@ -258,8 +285,8 @@ class Meeting extends Zoom
 
     /**
      * 添加注册人
-     * @param $meeting_id
-     * @param $registrant
+     * @param string $meeting_id
+     * @param array $registrant
      * @throws ZoomException
      * @return mixed
      */
@@ -285,8 +312,8 @@ class Meeting extends Zoom
 
     /**
      * 删除注册人
-     * @param $meeting_id
-     * @param $registrant_id
+     * @param string $meeting_id
+     * @param string $registrant_id
      * @throws ZoomException
      * @return mixed
      */

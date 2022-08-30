@@ -1,0 +1,104 @@
+{extend name="../../admin/view/table"}
+
+{block name="button"}
+{if isset($type) and $type eq 'index'}
+<!--{if auth("add")}-->
+<button data-modal='{:url("add")}' data-title="Add" class='layui-btn layui-btn-sm layui-btn-primary'>Add</button>
+<!--{/if}-->
+<!--{if auth("state")}-->
+<a data-confirm="Are you sure you want to disable this user？" data-table-id="UserData" data-action="{:url('state')}" data-rule="id#{id};status#0" class='layui-btn layui-btn-sm layui-btn-primary'>Batch Forbid</a>
+<!--{/if}-->
+{else}
+<!--{if auth("state")}-->
+<a data-confirm="Are you sure you want to enable this user？" data-table-id="UserData" data-action="{:url('state')}" data-rule="id#{id};status#1" class='layui-btn layui-btn-sm layui-btn-primary'>Batch Active</a>
+<!--{/if}-->
+<!--{if auth("remove")}-->
+<a data-confirm="Are you sure you want to delete this user？" data-table-id="UserData" data-action='{:url("remove")}' data-rule="id#{id}" class='layui-btn layui-btn-sm layui-btn-primary'>Batch Delete</a>
+<!--{/if}-->
+{/if}
+{/block}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <ul class="layui-tab-title">
+        {foreach ['index'=>'Users','recycle'=>'Recycle'] as $k=>$v}{if isset($type) and $type eq $k}
+        <li data-open="{:url('index')}?type={$k}" class="layui-this color-green">{$v}</li>
+        {else}
+        <li data-open="{:url('index')}?type={$k}">{$v}</li>
+        {/if}{/foreach}
+    </ul>
+    <div class="layui-tab-content">
+        {include file='user/index_search'}
+        <table id="UserData" data-url="{:sysuri('index')}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#UserData').layTable({
+            even: true, height: 'full',
+            sort: {field: 'sort desc,id', type: 'desc'},
+            where: {type: '{$type|default="index"}'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'sort', title: 'Sort', width: 100, align: 'center', sort: true, templet: '#SortInputTpl'},
+                {field: 'username', title: 'Account', minWidth: 110, templet: '<div>{{d.username||"-"}}</div>'},
+                {field: 'nickname', title: 'Username', minWidth: 110, templet: '<div>{{d.nickname||"-"}}</div>'},
+                /* {notempty name='bases'} */
+                {
+                    field: 'usertype', title: 'Role', minWidth: 140, sort: true, templet: function (d) {
+                        d.userinfo = d.userinfo || {};
+                        return d.userinfo.code ? (d.userinfo.name + ' ( ' + d.userinfo.code + ' ) ') : '';
+                    }
+                },
+                {field: 'status', title: 'Status', align: 'center', minWidth: 110, templet: '#StatusSwitchTpl'},
+                {field: 'login_num', title: 'Login Num', align: 'center', minWidth: 80, sort: true},
+                {field: 'login_at', title: 'Last Login', align: 'center', minWidth: 170, sort: true},
+                {field: 'create_at', title: 'Create Date', align: 'center', minWidth: 170, sort: true},
+                {toolbar: '#toolbar', title: 'Actions', align: 'center', minWidth: 160, fixed: 'right'}
+            ]]
+        });
+
+        // 数据状态切换操作
+        layui.form.on('switch(StatusSwitch)', function (obj) {
+            $.form.load("{:url('state')}", {id: obj.value, status: obj.elem.checked > 0 ? 1 : 0}, 'post', function (ret) {
+                if (ret.code < 1) $.msg.error(ret.info, 3, function () {
+                    $('#UserData').trigger('reload'); // 操作异常时重载数据
+                });
+                return false;
+            }, false);
+        });
+    });
+</script>
+
+<!-- 数据状态切换模板 -->
+<script type="text/html" id="StatusSwitchTpl">
+    <!--{if auth("state")}-->
+    <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="Active|Forbid" lay-filter="StatusSwitch" {{d.status>0?'checked':''}}>
+    <!--{else}-->
+    {{d.status ? '<b class="color-green">Active</b>' : '<b class="color-red">Forbid</b>'}}
+    <!--{/if}-->
+</script>
+
+<!-- 列表排序权重模板 -->
+<script type="text/html" id="SortInputTpl">
+    <input min="0" type="number" data-blur-number="0" data-action-blur="{:sysuri()}" data-value="id#{{d.id}};action#sort;sort#{value}" data-loading="false" value="{{d.sort}}" class="layui-input text-center">
+</script>
+
+<script type="text/html" id="toolbar">
+    {if isset($type) and $type eq 'index'}
+    <!--{if auth("edit")}-->
+    <a class="layui-btn layui-btn-sm" data-title="Edit" data-modal='{:url("edit")}?id={{d.id}}'>Edit</a>
+    <!--{/if}-->
+    <!--{if auth("pass")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" data-title="Password" data-modal='{:url("pass")}?id={{d.id}}'>Password</a>
+    <!--{/if}-->
+    {else}
+    <!--{if auth("edit")}-->
+    <a class="layui-btn layui-btn-sm" data-title="Edit" data-modal='{:url("edit")}?id={{d.id}}'>Edit</a>
+    <!--{/if}-->
+    <!--{if auth("remove")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="Are you sure you want to delete this user？？" data-action="{:url('remove')}" data-value="id#{{d.id}}">Delete</a>
+    <!--{/if}-->
+    {/if}
+</script>
+{/block}

@@ -1,0 +1,47 @@
+<fieldset>
+    <legend>Search</legend>
+    <form class="layui-form layui-form-pane form-search" action="{:sysuri()}" onsubmit="return false" method="get" autocomplete="off">
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">Title</label>
+            <div class="layui-input-inline">
+                <input name="title" value="{$get.title|default=''}" placeholder="Title" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">Desc</label>
+            <div class="layui-input-inline">
+                <input name="desc" value="{$get.desc|default=''}" placeholder="Desc" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">Status</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="status">
+                    <option value=''>-- All --</option>
+                    {foreach ['Forbid','Active'] as $k=>$v}
+                    {if input('get.status') eq $k.""}
+                    <option selected value="{$k}">{$v}</option>
+                    {else}
+                    <option value="{$k}">{$v}</option>
+                    {/if}{/foreach}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">Create Date</label>
+            <div class="layui-input-inline">
+                <input data-date-range name="create_at" value="{$get.create_at|default=''}" placeholder="Create Date" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> Search</button>
+        </div>
+    </form>
+
+    <script>layui.form.render()</script>
+</fieldset>

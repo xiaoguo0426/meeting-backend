@@ -1,6 +1,6 @@
 <?php
 
-namespace util\zoom;
+namespace extension\util\zoom;
 
 use Firebase\JWT\JWT;
 

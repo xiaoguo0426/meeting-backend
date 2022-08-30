@@ -1,7 +1,7 @@
 <?php
 
 
-namespace util\zoom;
+namespace extension\util\zoom;
 
 
 class ZoomException extends \Exception

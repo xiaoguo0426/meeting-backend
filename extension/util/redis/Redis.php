@@ -1,7 +1,7 @@
 <?php
 
 
-namespace util\redis;
+namespace extension\util\redis;
 
 
 use think\facade\Config;
@@ -53,8 +53,8 @@ class Redis
         $config = Config::get('redis.' . $pool);
 
         $this->config = array_replace_recursive($this->config, $config);
-        var_dump($this->config);
-//        $this->reconnect();
+
+        $this->reconnect();
     }
 
     /**
@@ -103,7 +103,6 @@ class Redis
             // The name is int, value is string.
             $redis->setOption($name, $value);
         }
-
         if ($redis instanceof \Redis && isset($auth) && $auth !== '') {
             $redis->auth($auth);
         }
@@ -112,7 +111,6 @@ class Redis
         if ($database > 0) {
             $redis->select($database);
         }
-
         $this->connection = $redis;
 
         return true;
@@ -196,6 +194,7 @@ class Redis
 
             $host = '';
             $port = 0;
+
             foreach ($nodes as $node) {
                 [$sentinelHost, $sentinelPort] = explode(':', $node);
                 $sentinel = new \RedisSentinel(
@@ -206,14 +205,17 @@ class Redis
                     $retryInterval,
                     $readTimeout
                 );
+
                 $masterInfo = $sentinel->getMasterAddrByName($masterName);
                 if (is_array($masterInfo) && count($masterInfo) >= 2) {
                     [$host, $port] = $masterInfo;
                     break;
                 }
             }
+            var_dump($host, $port, $timeout);
             $redis = $this->createRedis($host, $port, $timeout);
         } catch (\Throwable $e) {
+            var_dump($e->getTraceAsString());
             throw new ConnectionException('Connection reconnect failed ' . $e->getMessage());
         }
 

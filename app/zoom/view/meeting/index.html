@@ -1,0 +1,59 @@
+{extend name="../../admin/view/table"}
+
+{block name="button"}
+<!--{if auth("add")}-->
+<button data-open='{:url("add")}' data-title="Add" class='layui-btn layui-btn-sm layui-btn-primary'>Add</button>
+<!--{/if}-->
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <ul class="layui-tab-title">
+        <li class="layui-this color-green" data-open="">{$title}</li>
+    </ul>
+    <div class="layui-tab-content">
+        <table id="table" data-url="{:sysuri('index')}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#table').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            where: {type: '{$type|default="index"}'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'id', title: 'ID', align: 'center', maxWidth: 30, sort: true},
+                {field: 'meeting_id', title: 'Meeting ID', align: 'center', minWidth: 180},
+                {field: 'topic', title: 'Title', align: 'center', minWidth: 80},
+                {field: 'meeting_status', title: 'Status', align: 'center', minWidth: 50},
+                {field: 'start_time', title: 'Start Time', align: 'center', minWidth: 170},
+                {field: 'created_at', title: 'Create Time', align: 'center', minWidth: 170},
+                {field: 'created_by', title: 'Author', align: 'center', maxWidth: 80},
+                {toolbar: '#toolbar', title: 'Action', align: 'center', minWidth: 120, fixed: 'right'}
+            ]],
+            page: {
+                limit: 10,
+                limits: [10, 20, 30, 40, 50],
+                groups: 5,
+                prev: '<',
+                next: '>',
+                first: 'first',
+                last: 'last',
+                layout: ['prev', 'page', 'next', 'limit', 'skip']
+            }
+        });
+    });
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth("edit")}-->
+    <a class="layui-btn layui-btn-sm" data-title="Edit" data-open='{:url("edit")}?id={{d.id}}'>Edit</a>
+    <!--{/if}-->
+    <!--{if auth("info")}-->
+    <a class="layui-btn layui-btn-sm" data-title="Info" data-open='{:url("info")}?id={{d.id}}'>Info</a>
+    <!--{/if}-->
+    <!--{if auth("report")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" data-title="Edit" data-open='{:url("report")}?id={{d.id}}'>Report</a>
+    <!--{/if}-->
+</script>
+{/block}

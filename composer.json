@@ -1,0 +1,47 @@
+{
+  "type": "project",
+  "name": "sasha-lab/meeting",
+  "license": "MIT",
+  "description": "Admin Backend",
+  "keywords": [
+    "ThinkAdmin",
+    "ThinkLibrary"
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.4",
+    "ext-gd": "*",
+    "ext-xml": "*",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "ext-iconv": "*",
+    "ext-openssl": "*",
+    "ext-mbstring": "*",
+    "ext-simplexml": "*",
+    "ext-redis": "*",
+    "endroid/qr-code": "^1.9",
+    "topthink/framework": "^6.0",
+    "topthink/think-view": "^1.0",
+    "zoujingli/ip2region": "^1.0",
+    "zoujingli/think-library": "^6.0",
+    "firebase/php-jwt": "^6.2",
+    "phpmailer/phpmailer": "^6.6",
+    "guzzlehttp/guzzle": "^7.4",
+    "spomky-labs/php-aes-gcm": "^1.2"
+  },
+  "autoload": {
+    "psr-0": {
+      "": "extend"
+    },
+    "psr-4": {
+      "app\\": "app",
+      "extension\\": "extension"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php think service:discover",
+      "@php think vendor:publish"
+    ]
+  }
+}

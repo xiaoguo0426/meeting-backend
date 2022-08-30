@@ -1,6 +1,6 @@
 <?php
 
-namespace util\redis;
+namespace extension\util\redis;
 
 use Exception;
 

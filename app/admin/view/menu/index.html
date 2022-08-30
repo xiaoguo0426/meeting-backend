@@ -1,0 +1,102 @@
+{extend name='main'}
+
+{block name="button"}
+<!--{if $type eq 'index' and auth("add")}-->
+<button data-modal='{:url("add")}' data-title="Add Menu" class='layui-btn layui-btn-sm layui-btn-primary'>Add Menu</button>
+<!--{/if}-->
+
+<!--{if $type eq 'index' and auth("state")}-->
+<button data-action='{:url("state")}' data-csrf="{:systoken('state')}" data-rule="id#{key};status#0" class='layui-btn layui-btn-sm layui-btn-primary'>Batch Forbid</button>
+<!--{/if}-->
+
+<!--{if $type eq 'recycle' and auth("state")}-->
+<button data-action='{:url("state")}' data-csrf="{:systoken('state')}" data-rule="id#{key};status#1" class='layui-btn layui-btn-sm layui-btn-primary'>Batch Active</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <ul class="layui-tab-title">
+        {foreach ['index'=>'Menus','recycle'=>'Recycle'] as $k=>$v}
+        {if isset($type) and $type eq $k}
+        <li class="layui-this color-green" data-open="{:url('index')}?type={$k}">{$v}</li>
+        {else}
+        <li data-open="{:url('index')}?type={$k}">{$v}</li>
+        {/if}{/foreach}
+    </ul>
+    <div class="layui-tab-content">
+        {empty name='list'}
+        <div class="notdata">No Datas</div>
+        {else}
+        <table class="layui-table" lay-skin="line">
+            <thead>
+            <tr>
+                <th class='list-table-check-td think-checkbox'>
+                    <label><input data-auto-none data-check-target='.list-check-box' type='checkbox'></label>
+                </th>
+                <th class='list-table-sort-td'>
+                    <button type="button" data-reload class="layui-btn layui-btn-xs">Refresh</button>
+                </th>
+                <th class='text-center' style="width:30px"></th>
+                <th style="width:230px"></th>
+                <th class='layui-hide-xs' style="width:180px"></th>
+                <th colspan="2"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach $list as $key=>$vo}
+            <tr data-dbclick class="{if ($type eq 'index' and $vo.status eq 0)}layui-hide{/if}">
+                <td class='list-table-check-td think-checkbox'>
+                    <label><input class="list-check-box" value='{$vo.ids}' type='checkbox'></label>
+                </td>
+                <td class='list-table-sort-td'>
+                    <input data-action-blur="{:sysuri()}" data-value="id#{$vo.id};action#sort;sort#{value}" data-loading="false" value="{$vo.sort}" class="list-sort-input">
+                </td>
+                <td class='text-center'><i class="{$vo.icon} font-s18"></i></td>
+                <td class="nowrap"><span class="color-desc">{$vo.spl|raw}</span>{$vo.title}</td>
+                <td class='layui-hide-xs layui-elip'>{$vo.url}</td>
+                <td class='text-center nowrap'>{eq name='vo.status' value='0'}<span class="color-red">Forbid</span>{else}<span class="color-green">Active</span>{/eq}</td>
+                <td class='text-center nowrap notselect'>
+
+                    {if isset($type) and $type eq 'index'}
+
+                    {if auth("add")}
+                    <!--{if $vo.spt < 2}-->
+                    <a class="layui-btn layui-btn-sm layui-btn-primary" data-title="Add Sub Menu" data-modal='{:url("add")}?pid={$vo.id}'>Add</a>
+                    <!--{else}-->
+                    <a class="layui-btn layui-btn-sm layui-btn-disabled">Add</a>
+                    <!--{/if}-->
+                    {/if}
+
+                    <!--{if auth("edit")}-->
+                    <a data-dbclick class="layui-btn layui-btn-sm" data-title="Edit" data-modal='{:url("edit")}?id={$vo.id}'>Edit</a>
+                    <!--{/if}-->
+
+                    <!--{if $vo.status eq 1 and auth("state")}-->
+                    <a class="layui-btn layui-btn-warm layui-btn-sm" data-confirm="Are you sure you want to disable the menu?" data-action="{:url('state')}" data-value="id#{$vo.ids};status#0" data-csrf="{:systoken('state')}">Forbid</a>
+                    <!--{/if}-->
+
+                    {else}
+
+                    <!--{if auth("state")}-->
+                    <a class="layui-btn layui-btn-warm layui-btn-sm" data-confirm="Are you sure you want to activate the menu?" data-action="{:url('state')}" data-value="id#{$vo.ids};status#1" data-csrf="{:systoken('state')}">Active</a>
+                    <!--{/if}-->
+
+                    <!--{if auth("remove") and ($vo.spc<1 or $vo.status<1)}-->
+                    <a class="layui-btn layui-btn-danger layui-btn-sm" data-confirm="Are you sure you want to activate the menu?" data-action="{:url('remove')}" data-value="id#{$vo.ids}" data-csrf="{:systoken('remove')}">Delete</a>
+                    <!--{/if}-->
+
+                    <!--{if auth("remove") and $vo.spc>0 and $vo.status>0}-->
+                    <a class="layui-btn layui-btn-disabled layui-btn-sm">Delete</a>
+                    <!--{/if}-->
+
+                    {/if}
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+        {/empty}
+    </div>
+</div>
+{/block}

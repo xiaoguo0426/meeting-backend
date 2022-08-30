@@ -1,9 +1,10 @@
 <?php
 
 
-namespace app\command\user;
+namespace app\command\roles;
 
 
+use extension\util\zoom\Roles;
 use extension\util\zoom\User;
 use think\console\Command;
 use think\console\Input;
@@ -15,9 +16,8 @@ class Lists extends Command
     protected function configure()
     {
         // 指令配置
-        $this->setName('zoom:user')
-            ->addArgument('status', Argument::OPTIONAL, "status 会议类型: active,inactive,pending")
-            ->setDescription('列出所有用户');
+        $this->setName('zoom:roles')
+            ->setDescription('列出所有角色');
     }
 
     /**
@@ -25,8 +25,7 @@ class Lists extends Command
      */
     protected function execute(Input $input, Output $output)
     {
-        $status = $input->getArgument('status') ?? 'active';
-        $list = (new User())->lists($status);
+        $list = (new Roles())->lists();
         $output->writeln(var_export($list, true));
     }
 }

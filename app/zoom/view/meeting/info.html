@@ -145,14 +145,6 @@
         <input type="hidden" class="layui-input" name="timezone" value='Asia/Singapore'
                placeholder="Timezone" required>
 
-        {notempty name='vo.id'}
-        <label class="layui-form-item relative block">
-            <span class="help-label"><b>Join Url</b></span>
-            <input class="layui-input" name="join_url" value='{$vo.join_url|default=""}'
-                   placeholder="Join Url" readonly>
-            <span class="help-block">URL for participants to join the meeting. This URL should only be shared with users that you would like to invite for the meeting.</span>
-        </label>
-        {/notempty}
     </div>
 
     <div class="hr-line-dashed"></div>
@@ -160,12 +152,6 @@
     <input type='hidden' value='{$vo.meeting_id}' name='meeting_id'>
     <input type='hidden' value='{$vo.id}' name='id'>
     {/notempty}
-
-    <div class="layui-form-item text-center" style="padding-top: 30px">
-        <button class="layui-btn" type='submit'>Save</button>
-        <button class="layui-btn layui-btn-danger" type='button' data-close>Cancel</button>
-    </div>
-
 </form>
 {/block}
 {block name='script'}

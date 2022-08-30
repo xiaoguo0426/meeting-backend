@@ -1,0 +1,24 @@
+<form class="layui-form layui-card" id="AuthForm" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body padding-left-40">
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Title</b></span>
+            <input maxlength="100" class="layui-input" name="title" value='{$vo.title|default=""}' required placeholder="Title">
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Desc</b></span>
+            <textarea placeholder="Desc" maxlength="200" class="layui-textarea" name="desc">{$vo.desc|default=""}</textarea>
+        </label>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>Save</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="Are you sure you want to cancel editing？" data-close>Cancel</button>
+    </div>
+</form>
