@@ -1,0 +1,198 @@
+{extend name='../../admin/view/main'}
+{block name="content"}
+<form class="layui-form layui-card" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body padding-left-40">
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Topic*</b></span>
+            <input maxlength="255" class="layui-input" name="topic" value='{$vo.topic|default=""}'
+                   placeholder="Topic" required>
+            <span class="help-block">The meeting's topic.</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Type*</b></span>
+            <select name='type' class='layui-select' lay-filter="meeting-type" required>
+                <option value='' readonly="">Please Select a Type</option>
+                <option value='1' {if condition="($vo['type'] =='1')" }selected{
+                /if}>An instant meeting</option>
+                <option value='2' {if condition="($vo['type'] == '2')" }selected{
+                /if}>A scheduled meeting</option>
+                <option value='3' {if condition="($vo['type'] == '3')" }selected{
+                /if}>A recurring meeting with no fixed time</option>
+                <option value='8' {if condition="($vo['type'] == '8')" }selected{
+                /if}>A recurring meeting with fixed time</option>
+            </select>
+            <span class="help-block">The type of meeting</span>
+        </label>
+
+        <div class="layui-row padding-left-20">
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this color-blue">End Date Time</li>
+                    <li class="color-blue">End Times</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <label class="layui-form-item relative block">
+                            <span class="help-label"><b>Recurrence - End Date Time</b></span>
+                            <input maxlength="10" class="layui-input" name="recurrence[end_date_time]" value='{$vo.recurrence.end_date_time|default=""}'
+                                   placeholder="Password" required>
+                            <span class="help-block">Select the final date on which the meeting will recur before it is canceled.</span>
+                        </label>
+                    </div>
+                    <div class="layui-tab-item">
+                        <label class="layui-form-item relative block">
+                            <span class="help-label"><b>Recurrence - End Times</b></span>
+                            <input type="number" min="1" max="365" class="layui-input" name="recurrence[end_times]" value='{$vo.recurrence.end_times|default="1"}'
+                                   placeholder="" required>
+                            <span class="help-block">Select how many times the meeting should recur before it is canceled. </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this color-blue">Daily</li>
+                    <li class="color-blue">Weekly</li>
+                    <li class="color-blue">Monthly</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show"></div>
+                    <div class="layui-tab-item">内容2</div>
+                    <div class="layui-tab-item">内容3</div>
+                </div>
+            </div>
+
+        </div>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Password</b></span>
+            <input maxlength="10" class="layui-input" name="password" value='{$vo.password|default=""}'
+                   placeholder="Password" required>
+            <span class="help-block">The password required to join the meeting. </span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Agenda</b></span>
+            <textarea placeholder="" maxlength="2000" class="layui-textarea" name="agenda" required>{$vo.agenda|default=""}</textarea>
+            <span class="help-block">The meeting's agenda. </span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Password</b></span>
+            <input maxlength="10" class="layui-input" name="password" value='{$vo.password|default=""}'
+                   placeholder="Password" required>
+            <span class="help-block">The password required to join the meeting. </span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Start Time</b></span>
+            <input class="layui-input" name="start_time" placeholder="Start Time"
+                   value="{$vo.start_time|default=''}" required>
+            <span class="help-block">The meeting's start time.</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Duration</b></span>
+            <input maxlength="10" class="layui-input" name="duration" value='{$vo.duration|default=""}'
+                   placeholder="Duration" required>
+            <span class="help-block">The meeting's scheduled duration, in minutes.</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Calendar Type</b></span>
+            <select name='settings[calendar_type]' class='layui-select'>
+                <option value='' readonly="">Please Select a Calendar Type</option>
+                <option value='1' {if condition="($vo['settings']['calendar_type'] ==1)" }selected{
+                /if}>Outlook calendar</option>
+                <option value='2' {if condition="($vo['settings']['calendar_type'] ==2)" }selected{
+                /if}>Google calendar</option>
+            </select>
+            <span class="help-block">The type of meeting</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Approval Type</b></span>
+            <select name='settings[approval_type]' class='layui-select'>
+                <option value='' readonly="">Please Select a Calendar Type</option>
+                <option value='0' {if condition="($vo['settings']['approval_type'] ==0)" }selected{
+                /if}>Automatically approve registration</option>
+                <option value='1' {if condition="($vo['settings']['approval_type'] ==1)" }selected{
+                /if}>Manually approve registration</option>
+                <option value='2' {if condition="($vo['settings']['approval_type'] ==2)" }selected{
+                /if}>No registration required</option>
+            </select>
+            <span class="help-block">The type of meeting</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Auto Recording</b></span>
+            <select name='settings[auto_recording]' class='layui-select'>
+                <option value='' readonly>Please Select a Auto Recording Type</option>
+                <option value='local' {if condition="($vo['settings']['auto_recording'] =='local')" }selected{
+                /if}>Local</option>
+                <option value='cloud' {if condition="($vo['settings']['auto_recording'] =='cloud')" }selected{
+                /if}>Cloud</option>
+                <option value='none' {if condition="($vo['settings']['auto_recording'] =='none')" }selected{
+                /if}>None</option>
+            </select>
+            <span class="help-block">The type of auto recording</span>
+        </label>
+
+        <input type="hidden" class="layui-input" name="timezone" value='Asia/Singapore'
+               placeholder="Timezone" required>
+
+        {notempty name='vo.id'}
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>Join Url</b></span>
+            <input class="layui-input" name="join_url" value='{$vo.join_url|default=""}'
+                   placeholder="Join Url" readonly>
+            <span class="help-block">URL for participants to join the meeting. This URL should only be shared with users that you would like to invite for the meeting.</span>
+        </label>
+        {/notempty}
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}
+    <input type='hidden' value='{$vo.meeting_id}' name='meeting_id'>
+    <input type='hidden' value='{$vo.id}' name='id'>
+    {/notempty}
+
+    <div class="layui-form-item text-center" style="padding-top: 30px">
+        <button class="layui-btn" type='submit'>Save</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-close>Cancel</button>
+    </div>
+
+</form>
+{/block}
+{block name='script'}
+<script>
+
+    layui.form.render();
+
+    layui.form.render(null, 'advanced-settings');
+
+    form.on('select(meeting-type)', function (data) {
+        if (data.value !== '8') {
+
+        } else {
+
+        }
+    });
+
+
+    var startDate = laydate.render({
+        elem: 'input[name="start_time"]',
+        type: 'datetime',
+        format: 'yyyy-MM-ddTHH:mm:ssZ',
+        lang: 'en',
+        min: 'now',
+        done: function (value, date) {
+
+        }
+    });
+</script>
+{/block}
